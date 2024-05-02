@@ -8,6 +8,7 @@ import { createClient } from "@/utils/supabase/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Pen, Trash } from "lucide-react";
 import { Close, X } from "@mui/icons-material";
+import ExportButton from "../ExportButton";
 
 type DataType = {
   id: string;
@@ -232,53 +233,56 @@ export function ClientToDoTable({ data }: { data: DataType }) {
 
   return (
     <div className="w-full">
-      <form className="flex-1">
-        {!isEditing && (
-          <div className="flex items-center">
-            <Input
-              className="min-w-0 w-full"
-              placeholder="Add todo..."
-              type="text"
-              value={task}
-              onChange={handleInputChange}
-            />
-            <Button
-              variant="outline"
-              className="h-10 gap-1 sm:w-4 border-none"
-              onClick={handleFormSubmit}
-            >
-              <span>
-                <PlusCircle className="h-3.5 w-3.5 dark:text-white light:text-black" />
-              </span>
-            </Button>
-          </div>
-        )}
-        {/* If isEditing is True, show edit input field */}
-        {isEditing && (
-          <div className="flex items-center">
-            <Input
-              className="min-w-0 w-full"
-              placeholder="Edit todo..."
-              type="text"
-              value={task}
-              onChange={handleEditChange}
-            />
-            <Button
-              variant="outline"
-              className="h-10 gap-1 sm:w-4 border-none"
-              onClick={(event) => {
-                if (editingId !== null) {
-                  handleEditFormSubmit(event, editingId, task);
-                }
-              }}
-            >
-              <span>
-                <PlusCircle className="h-3.5 w-3.5 dark:text-white light:text-black" />
-              </span>
-            </Button>
-          </div>
-        )}
-      </form>
+      <div className="flex">
+        <form className="flex-1">
+          {!isEditing && (
+            <div className="flex items-center">
+              <Input
+                className="min-w-0 w-1/4"
+                placeholder="Add todo..."
+                type="text"
+                value={task}
+                onChange={handleInputChange}
+              />
+              <Button
+                variant="outline"
+                className="h-10 gap-1 sm:w-4 border-none"
+                onClick={handleFormSubmit}
+              >
+                <span>
+                  <PlusCircle className="h-3.5 w-3.5 dark:text-white light:text-black" />
+                </span>
+              </Button>
+            </div>
+          )}
+          {/* If isEditing is True, show edit input field */}
+          {isEditing && (
+            <div className="flex items-center">
+              <Input
+                className="min-w-0 w-1/4"
+                placeholder="Edit todo..."
+                type="text"
+                value={task}
+                onChange={handleEditChange}
+              />
+              <Button
+                variant="outline"
+                className="h-10 gap-1 sm:w-4 border-none"
+                onClick={(event) => {
+                  if (editingId !== null) {
+                    handleEditFormSubmit(event, editingId, task);
+                  }
+                }}
+              >
+                <span>
+                  <PlusCircle className="h-3.5 w-3.5 dark:text-white light:text-black" />
+                </span>
+              </Button>
+            </div>
+          )}
+        </form>
+        <ExportButton />
+      </div>
       <ToDoDataTable columns={columns} data={data} height="500px" />
     </div>
   );
