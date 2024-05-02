@@ -11,8 +11,7 @@ import { Close } from "@mui/icons-material";
 export type ToDo = {
   id: string;
   task: string;
-  is_complete: boolean;
-  inserted_at: Date;
+  completed: boolean;
 };
 
 const supabase = createClient();
@@ -48,9 +47,9 @@ export const columns: ColumnDef<ToDo>[] = [
       const is_completed = row.getValue("mark_done");
       const id = row.original.id;
 
-      const updateTask = async (id: number, is_complete: boolean) => {
-        await supabase.from("todos").update({ is_complete }).eq("id", id);
-        console.log(is_complete);
+      const updateTask = async (id: number, completed: boolean) => {
+        await supabase.from("todos").update({ completed }).eq("id", id);
+        console.log(completed);
         const { data, error } = await supabase
           .from("todos")
           .select("")
@@ -99,27 +98,6 @@ export const columns: ColumnDef<ToDo>[] = [
       const task = row.getValue("task");
       const formatted = typeof task === "string" ? task.toUpperCase() : task;
 
-      return <div className="text-center font-medium">{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "inserted_at",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="justify-center w-full"
-        >
-          <div className="text-center">Created</div>
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }: { row: any }) => {
-      const inserted_at = row.getValue("inserted_at");
-      const formatted =
-        typeof inserted_at === "string" ? inserted_at.slice() : inserted_at;
       return <div className="text-center font-medium">{formatted}</div>;
     },
   },
