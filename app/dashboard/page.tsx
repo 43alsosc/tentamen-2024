@@ -17,7 +17,7 @@ export default async function Page() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/login");
+    return redirect("/signin");
   }
 
   // Fetch data fra supabase og returner i data
