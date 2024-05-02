@@ -6,6 +6,7 @@ export async function getData(): Promise<ToDo[]> {
   supabase.auth.getUser();
 
   const { data, error } = await supabase.from("todos").select("*");
+
   if (error) {
     console.error("Error fetching todos");
     throw error;
@@ -20,7 +21,7 @@ export async function getDoneData(): Promise<ToDo[]> {
   const { data, error } = await supabase
     .from("todos")
     .select("*")
-    .match({ is_complete: true });
+    .match({ completed: true });
   if (error) {
     console.error("Error fetching todos");
     throw error;
@@ -35,7 +36,7 @@ export async function getNotDoneData(): Promise<ToDo[]> {
   const { data, error } = await supabase
     .from("todos")
     .select("*")
-    .match({ is_complete: false });
+    .match({ completed: false });
   if (error) {
     console.error("Error fetching todos");
     throw error;
