@@ -4,14 +4,12 @@ import * as React from "react";
 
 import {
   ColumnDef,
-  SortingState,
   VisibilityState,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -25,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Search } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { Tabs } from "../ui/tabs";
 import {
   DropdownMenu,
@@ -33,10 +31,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import AddProduct from "../AddToDo";
+// import AddProduct from "../AddToDo";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import ExportButton from "../ExportButton";
+import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,24 +46,24 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]); // State for sorting
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [] // State for column filters
   );
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
       id: false,
       task: true,
       mark_done: true,
-      inserted_at: true,
       actions: true,
     }); // State for column visibility
 
   const supabase = createClient(); // Create a Supabase client
   const router = useRouter(); // Get the router object from Next.js
 
+  // Subscribe to changes in the todos table
   supabase
-    .channel("data_table_data")
+    .channel("data_table")
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "todos" },
@@ -80,36 +79,35 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
-      sorting,
       columnFilters,
       columnVisibility,
     },
   });
 
+  // Input change handler
+
+  const editTask = async (id: number, task: string) => {
+    const { data, error } = await supabase
+      .from("todos")
+      .update({ task })
+      .eq("id", id);
+
+    // if (error) {
+    //   console.error("Error fetching data to edit:");
+    // } else {
+    //   console.log("Edit data:");
+    //   setEditingTodo(""); // Hide the input field after successful update
+    // }
+  };
+
   return (
     <div>
       <Tabs defaultValue="all">
         <div className="flex justify-between">
-          {/* ToDo search */}
-          <div className="relative flex items-center py-4 w-1/2">
-            <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search ToDos"
-              value={
-                (table.getColumn("task")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) => {
-                table.getColumn("task")?.setFilterValue(event.target.value);
-              }}
-              className="max-w-sm pl-8"
-            />
-          </div>
           <div className="py-4 flex gap-3">
             {/* Dropdown for column filters */}
             <DropdownMenu>
@@ -141,7 +139,7 @@ export function DataTable<TData, TValue>({
             {/* Export button */}
             <ExportButton />
             {/* Input form to add Todo */}
-            <AddProduct />
+            <div></div>
           </div>
         </div>
         <div className="rounded-md border">
