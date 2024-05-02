@@ -1,8 +1,11 @@
-import getData from "@/api/fetch/getDataTableData";
-import { columns } from "@/components/data-table/columns";
-import { DataTable } from "@/components/data-table/data-table";
+import {
+  getData,
+  getDoneData,
+  getNotDoneData,
+} from "@/api/fetch/getDataTableData";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { ClientToDoTable } from "@/components/table/client-todo-table";
 
 export default async function Page() {
   // Koble til SupaBase
@@ -19,13 +22,12 @@ export default async function Page() {
 
   // Fetch data fra supabase og returner i data
   const data = await getData();
+  const doneData = await getDoneData();
+  const notDoneData = await getNotDoneData();
 
   return (
-    <div className="flex">
-      <div className="bg-gray-300"></div>
-      <div>
-        <DataTable columns={columns} data={data} />
-      </div>
+    <div className="flex w-full">
+      <ClientToDoTable data={data} />
     </div>
   );
 }
