@@ -6,6 +6,7 @@ import {
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { ClientToDoTable } from "@/components/table/client-todo-table";
+import Profile from "@/components/Profile";
 
 export default async function Page() {
   // Koble til SupaBase
@@ -26,7 +27,11 @@ export default async function Page() {
   const notDoneData = await getNotDoneData();
 
   return (
-    <div className="flex w-full">
+    <div className="flex flex-wrap w-full">
+      <div className="flex bg-gray-400 w-full justify-between mb-6">
+        <h1 className="text-3xl text-left px-8 py-2">Dashboard</h1>
+        <Profile />
+      </div>
       <ClientToDoTable data={data} />
     </div>
   );
