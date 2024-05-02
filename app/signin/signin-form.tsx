@@ -55,7 +55,7 @@ export default function SignInForm() {
             className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2 w-1/2"
             pendingText="Signing Up..."
           >
-            Sign Up
+            Sign In
           </SubmitButton>
         </div>
         <div className="mt-4 text-center text-sm">
